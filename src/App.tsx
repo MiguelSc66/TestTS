@@ -1,24 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
+import List from './components/List';
+import Form from './components/Form';
+import { Sub } from './types';
+
+const INITIAL_STATE = [{
+    nick: 'Jorge',
+    subMonths: 3,
+    avatar: 'https://i.pravatar.cc/150?u=jorgee',
+    description: 'Jorge hace de encargado'
+  },
+  {
+    nick: 'Juan',
+    subMonths: 2,
+    avatar: 'https://i.pravatar.cc/150?u=juan',
+  }
+]
+
+
+interface AppState {
+  subs: Array<Sub>
+  newSubsNumber: number
+}
 
 function App() {
+  const [ subs, setSubs] = useState<AppState['subs']>([])
+  const divRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setSubs(INITIAL_STATE)
+  }, [])
+
+
+  const handleNewSubs = (newSubs: Sub): void => {
+    setSubs(subs => [...subs, newSubs])
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" ref={divRef}>
+      <h1>Subs</h1>
+      <List subs={subs} />
+      <Form onNewSubs={handleNewSubs}/>
     </div>
   );
 }
